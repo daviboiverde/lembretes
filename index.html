@@ -786,17 +786,30 @@ $('#fileIn').addEventListener('change',e=>{
   fr.readAsText(file);
 });
 
-/* ================= diagnóstico: abra o app com #debug no final da URL ================= */
-if(location.hash==='#debug'){
+/* ================= diagnóstico: #debug na URL, ou toque 5x no logo do topo ================= */
+let dbgOn=false;
+function toggleDebug(){
+  if(dbgOn){ const x=$('#dbgBox'); x&&x.remove(); dbgOn=false; return; }
+  dbgOn=true;
   const probe=document.createElement('div');
   probe.style.cssText='position:fixed;left:0;bottom:0;width:1px;height:0;visibility:hidden;padding-bottom:env(safe-area-inset-bottom,0px)';
-  document.body.appendChild(probe);
   const d=document.createElement('pre');
+  d.id='dbgBox';
   d.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:8px;right:8px;z-index:999;background:rgba(0,0,0,.85);color:#9ff;font:11px/1.4 monospace;padding:8px;border-radius:8px;pointer-events:none;white-space:pre-wrap';
+  d.appendChild(probe);
   document.body.appendChild(d);
-  const upd=()=>{d.textContent=['sab(env)='+probe.offsetHeight+'px','innerHeight='+innerHeight,'screen='+screen.width+'x'+screen.height,'standalone='+(navigator.standalone||matchMedia('(display-mode: standalone)').matches),'tabbar top='+Math.round($('.tabbar').getBoundingClientRect().top),'tabbar bottom='+Math.round($('.tabbar').getBoundingClientRect().bottom)].join(String.fromCharCode(10));};
-  upd(); setInterval(upd,1000);
+  const upd=()=>{
+    if(!dbgOn) return;
+    const r=$('.tabbar').getBoundingClientRect();
+    d.firstChild.nodeType===1&&(d.dataset.sab=probe.offsetHeight);
+    d.childNodes.length>1&&d.removeChild(d.lastChild);
+    d.appendChild(document.createTextNode(['sab(env)='+probe.offsetHeight+'px','innerHeight='+innerHeight,'screen='+screen.width+'x'+screen.height,'standalone='+(navigator.standalone||matchMedia('(display-mode: standalone)').matches),'tabbar top='+Math.round(r.top),'tabbar bottom='+Math.round(r.bottom)].join(String.fromCharCode(10))));
+    setTimeout(upd,1000);
+  };
+  upd();
 }
+if(location.hash==='#debug') toggleDebug();
+(()=>{ let n=0,t; $('.brand-dot').addEventListener('click',()=>{ n++; clearTimeout(t); t=setTimeout(()=>n=0,1500); if(n>=5){ n=0; toggleDebug(); } }); })();
 
 /* ================= init ================= */
 render(true);
