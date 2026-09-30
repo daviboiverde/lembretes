@@ -1,5 +1,5 @@
 // Service worker: network-first. Online sempre pega a versão nova; cache só como fallback offline.
-const CACHE = 'lembretes-v2';
+const CACHE = 'lembretes-v3';
 const SHELL = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png', 'favicon.ico'];
 const CDN = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js'];
 

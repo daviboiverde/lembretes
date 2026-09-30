@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#050506">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Lembretes">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -793,19 +793,27 @@ let dbgOn=false;
 function toggleDebug(){
   if(dbgOn){ const x=$('#dbgBox'); x&&x.remove(); dbgOn=false; return; }
   dbgOn=true;
-  const probe=document.createElement('div');
-  probe.style.cssText='position:fixed;left:0;bottom:0;width:1px;height:0;visibility:hidden;padding-bottom:env(safe-area-inset-bottom,0px)';
-  const d=document.createElement('pre');
-  d.id='dbgBox';
-  d.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:8px;right:8px;z-index:999;background:rgba(0,0,0,.85);color:#9ff;font:11px/1.4 monospace;padding:8px;border-radius:8px;pointer-events:none;white-space:pre-wrap';
-  d.appendChild(probe);
-  document.body.appendChild(d);
+  const box=document.createElement('div');
+  box.id='dbgBox';
+  box.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:8px;right:8px;z-index:999;background:rgba(0,0,0,.85);color:#9ff;font:11px/1.4 monospace;padding:8px;border-radius:8px;pointer-events:none;white-space:pre-wrap';
+  const inset=side=>{
+    const p=document.createElement('div');
+    p.style.cssText='position:fixed;left:0;top:0;width:1px;height:0;visibility:hidden;padding-top:env(safe-area-inset-'+side+',0px)';
+    document.body.appendChild(p);
+    const v=p.offsetHeight; p.remove(); return v;
+  };
+  document.body.appendChild(box);
   const upd=()=>{
     if(!dbgOn) return;
     const r=$('.tabbar').getBoundingClientRect();
-    d.firstChild.nodeType===1&&(d.dataset.sab=probe.offsetHeight);
-    d.childNodes.length>1&&d.removeChild(d.lastChild);
-    d.appendChild(document.createTextNode(['sab(env)='+probe.offsetHeight+'px','innerHeight='+innerHeight,'screen='+screen.width+'x'+screen.height,'standalone='+(navigator.standalone||matchMedia('(display-mode: standalone)').matches),'tabbar top='+Math.round(r.top),'tabbar bottom='+Math.round(r.bottom)].join(String.fromCharCode(10))));
+    const vv=window.visualViewport;
+    box.textContent=[
+      'sat='+inset('top')+' sab='+inset('bottom'),
+      'innerHeight='+innerHeight+' clientH='+document.documentElement.clientHeight+(vv?' vv='+Math.round(vv.height):''),
+      'screen='+screen.width+'x'+screen.height,
+      'standalone='+(navigator.standalone||matchMedia('(display-mode: standalone)').matches),
+      'tabbar top='+Math.round(r.top)+' bottom='+Math.round(r.bottom)
+    ].join(String.fromCharCode(10));
     setTimeout(upd,1000);
   };
   upd();
