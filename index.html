@@ -794,8 +794,7 @@ if(location.hash==='#debug'){
   const d=document.createElement('pre');
   d.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:8px;right:8px;z-index:999;background:rgba(0,0,0,.85);color:#9ff;font:11px/1.4 monospace;padding:8px;border-radius:8px;pointer-events:none;white-space:pre-wrap';
   document.body.appendChild(d);
-  const upd=()=>{d.textContent=['sab(env)='+probe.offsetHeight+'px','innerHeight='+innerHeight,'screen='+screen.width+'x'+screen.height,'standalone='+(navigator.standalone||matchMedia('(display-mode: standalone)').matches),'tabbar top='+Math.round($('.tabbar').getBoundingClientRect().top),'tabbar bottom='+Math.round($('.tabbar').getBoundingClientRect().bottom)].join('
-');};
+  const upd=()=>{d.textContent=['sab(env)='+probe.offsetHeight+'px','innerHeight='+innerHeight,'screen='+screen.width+'x'+screen.height,'standalone='+(navigator.standalone||matchMedia('(display-mode: standalone)').matches),'tabbar top='+Math.round($('.tabbar').getBoundingClientRect().top),'tabbar bottom='+Math.round($('.tabbar').getBoundingClientRect().bottom)].join(String.fromCharCode(10));};
   upd(); setInterval(upd,1000);
 }
 
