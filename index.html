@@ -70,6 +70,8 @@ svg{display:block}
 /* ===== layout ===== */
 main{max-width:520px;margin:0 auto;padding:16px calc(var(--sar) + 16px) calc(var(--tabbar-h) + var(--tbpad) + 110px) calc(var(--sal) + 16px)}
 #view{min-height:40vh}
+/* no Safari (fora do app instalado) a página precisa rolar um pouco pra barra de endereço recolher e a tabbar descer */
+@media not all and (display-mode: standalone){ main{min-height:calc(100svh + 90px)} }
 .sec{margin-top:22px}
 .sec:first-child{margin-top:0}
 .sec-h{display:flex;align-items:center;justify-content:space-between;margin:0 2px 10px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
